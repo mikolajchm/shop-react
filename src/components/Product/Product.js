@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProductImage from '../ProductImage/ProductImage';
 import ProductForm from '../ProductForm/ProductForm';
@@ -16,18 +16,18 @@ const Product = ({ name, title, basePrice, colors, sizes }) => {
     setCurrentSize(size);
   };
 
-  const getPrice = () => {
+  const price = useMemo(() => {
     const selectedSize = sizes.find((size) => size === currentSize);
     const additionalPrice = selectedSize ? selectedSize.additionalPrice : 0;
     return basePrice + additionalPrice;
-  };
+  }, [currentSize, sizes, basePrice]);
 
   const handleAddToCart = (event) => {
     event.preventDefault();
 
     console.log('Product Summary:');
     console.log('Name:', title);
-    console.log('Final Price:', getPrice());
+    console.log('Final Price:', price);
     console.log('Selected Options:', {
       color: currentColor,
       size: currentSize.name,
@@ -40,7 +40,7 @@ const Product = ({ name, title, basePrice, colors, sizes }) => {
       <div>
         <header>
           <h2 className={styles.name}>{title}</h2>
-          <span className={styles.price}>{`Price: ${getPrice()}$`}</span>
+          <span className={styles.price}>{`Price: ${price}$`}</span>
         </header>
         <ProductForm
           name={name}
